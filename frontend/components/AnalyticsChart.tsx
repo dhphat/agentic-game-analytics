@@ -72,7 +72,7 @@ export function AnalyticsChart({ data, type = "bar", xKey, yKey }: AnalyticsChar
               cy="50%"
               outerRadius={90}
               innerRadius={50}
-              label={({name, percent}) => `${name} (${(percent * 100).toFixed(0)}%)`}
+              label={({name, percent}) => `${name} (${((percent || 0) * 100).toFixed(0)}%)`}
               labelLine={false}
             >
               {data.map((entry, index) => (
