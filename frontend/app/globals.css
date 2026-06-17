@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #111827; /* gray-900 */
+  --color-accent-purple: #8B5CF6; /* subtle purple for text highlights */
+  --color-accent-teal: #14b8a6; /* teal-500 */
+}
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #111827;
+    --border: rgba(0, 0, 0, 0.08);
+  }
+}
+
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    /* We will use Next.js font loading, usually Geist or Inter */
+  }
+}
+
+@layer utilities {
+  /* Minimalist light mode shadow utility */
+  .soft-shadow {
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .medium-shadow {
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Elegant white glass */
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-black/5 shadow-sm;
+  }
+  
+  /* Solid white cards */
+  .glass-card {
+    @apply bg-white border border-gray-100 rounded-2xl shadow-sm;
+  }
+  
+  /* Clean gradient text */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-purple-600;
+  }
+
+  .bg-waves-base {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background-color: #fafafa;
+  }
+  
+  .bg-waves-cool::before, .bg-waves-warm::before {
+    content: "";
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    transform: rotate(-15deg);
+    animation: wave1 15s infinite alternate ease-in-out;
+  }
+
+  .bg-waves-cool::after, .bg-waves-warm::after {
+    content: "";
+    position: absolute;
+    top: -30%; left: -20%; width: 150%; height: 150%;
+    transform: rotate(10deg);
+    animation: wave2 20s infinite alternate-reverse ease-in-out;
+  }
+
+  /* Cool Tone (Idle) */
+  .bg-waves-cool::before {
+    background: radial-gradient(circle at 50% 50%, rgba(200, 225, 255, 0.9) 0%, rgba(255, 255, 255, 0) 45%);
+  }
+  .bg-waves-cool::after {
+    background: radial-gradient(circle at 60% 40%, rgba(215, 230, 250, 0.95) 0%, rgba(255, 255, 255, 0) 50%);
+  }
+
+  /* Warm Tone (Generating) */
+  .bg-waves-warm::before {
+    background: radial-gradient(circle at 50% 50%, rgba(255, 220, 200, 0.9) 0%, rgba(255, 255, 255, 0) 45%);
+    animation-duration: 8s; /* faster when thinking */
+  }
+  .bg-waves-warm::after {
+    background: radial-gradient(circle at 60% 40%, rgba(255, 210, 210, 0.95) 0%, rgba(255, 255, 255, 0) 50%);
+    animation-duration: 10s;
+  }
+}
+
+@keyframes wave1 {
+  0% { transform: rotate(-15deg) translate(0%, 0%); }
+  100% { transform: rotate(-5deg) translate(8%, 8%); }
+}
+
+@keyframes wave2 {
+  0% { transform: rotate(10deg) translate(0%, 0%); }
+  100% { transform: rotate(20deg) translate(-8%, -8%); }
+}
+
+.animate-gradient-text {
+  background: linear-gradient(90deg, #14b8a6, #3b82f6, #a855f7, #14b8a6);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  animation: gradientText 4s linear infinite;
+}
+
+@keyframes gradientText {
+  0% { background-position: 0% 50%; }
+  100% { background-position: -300% 50%; }
+}
+
+/* Custom Scrollbar for light theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}

@@ -1,0 +1,34 @@
+# HƯỚNG DẪN DEMO CẢNH BÁO BẤT THƯỜNG TRÊN DỮ LIỆU THẬT
+
+Hệ thống Agentic Game Data Analytics đã được cấu hình để quét 100% dữ liệu thật từ các file CSV (`surveys.csv`, `payments.csv`, `users_segment.csv`). 
+Dưới đây là cách bạn trình diễn (demo) cho người khác xem cách dữ liệu thay đổi sẽ tác động đến hệ thống cảnh báo (Alert) như thế nào.
+
+---
+
+## 1. Demo Cảnh Báo "Spike in 1-Star Bug Reports"
+**Logic hệ thống**: Quét bảng `surveys.csv`. Nếu có từ 15 đánh giá 1 sao trở lên chứa các từ khóa (bug, lag, crash, error) thì sẽ bật cảnh báo Đỏ (Critical) và đề xuất tặng quà.
+
+**Cách Demo**:
+- Bước 1: Mở trình duyệt, cảnh báo Đỏ có thể đang hiện hoặc không (tùy số lượng hiện tại).
+- Bước 2: Mở file `surveys.csv` bằng text editor hoặc VS Code.
+- Bước 3: Cuộn xuống dòng cuối cùng và copy/paste thêm 1-2 dòng dữ liệu lỗi nghiêm trọng như sau:
+`SRV99998,U00123,2026-06-17,1,The game is full of bugs and crashes,Bugs`
+`SRV99999,U00456,2026-06-17,1,Terrible lag and bug everywhere,Bugs`
+- Bước 4: Lưu file `surveys.csv`.
+- Bước 5: Ra lại giao diện web và bấm Refresh (F5). Bạn sẽ thấy cảnh báo hiện lên, hoặc con số đếm (Detected X recent 1-star reviews) sẽ TĂNG LÊN tương ứng với số dòng bạn vừa thêm!
+
+---
+
+## 2. Demo Cảnh Báo "VIP Spending Drop Detected"
+**Logic hệ thống**: Quét bảng `payments.csv` và `users_segment.csv`. Tính tổng doanh thu (amount_usd) của hạng VIP Gold và so sánh với Silver. Ở một game bình thường, doanh thu từ khách VIP (Gold) thường phải cao hơn Silver. Nên nếu tổng doanh thu Gold THẤP HƠN Silver, hệ thống sẽ bật cảnh báo Cam (High).
+
+**Tại sao lúc nãy nó báo: Gold ($2,005) < Silver ($12,148)?**
+Đây KHÔNG PHẢI dữ liệu giả! Hệ thống đã tính toán dựa trên dữ liệu thật đang có trong file. Sở dĩ có con số này là vì khi chúng ta dùng code Python sinh dữ liệu ngẫu nhiên lúc đầu, số lượng user Silver chiếm đa số nên tổng tiền nạp của họ vô tình vượt qua user Gold. Do đó, hệ thống lập tức phát hiện ra sự "bất thường" này!
+
+**Cách Demo làm Cảnh báo này BIẾN MẤT (Cách "Cứu" Doanh Thu)**:
+- Bước 1: Hiện tại cảnh báo Cam đang báo Gold ($2,005) thua Silver ($12,148). Ta cần một user Gold nạp một cục tiền lớn (khoảng 15,000 USD) để đảo ngược tình thế.
+- Bước 2: Tìm một user thuộc hạng Gold (ví dụ: U00810).
+- Bước 3: Mở file `payments.csv` và dán dòng nạp tiền "khủng" này vào dòng cuối cùng của file:
+`TXN999999,U00810,2026-06-17,15000.00,Gems`
+- Bước 4: Lưu file `payments.csv`.
+- Bước 5: Ra lại giao diện web và bấm Refresh (F5). Bùm! Cảnh báo "VIP Spending Drop Detected" sẽ BIẾN MẤT hoàn toàn vì lúc này doanh thu Gold ($17,005) đã lớn hơn Silver ($12,148). Mọi thứ đã trở lại bình thường!
