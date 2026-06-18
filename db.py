@@ -63,8 +63,20 @@ def _load_from_supabase() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     users_df = _fetch_table("users_segment")
     payments_df = _fetch_table("payments")
     surveys_df = _fetch_table("surveys")
+
+    # Validate — if any table is empty, it usually means RLS is blocking reads
+    for name, df in [("users_segment", users_df), ("payments", payments_df), ("surveys", surveys_df)]:
+        if df.empty:
+            raise RuntimeError(
+                f"[db] Table '{name}' returned 0 rows from Supabase. "
+                "This is usually caused by Row Level Security (RLS) blocking the anon key. "
+                "Fix: In Supabase Dashboard → Authentication → Policies, disable RLS on all 3 tables, "
+                "OR replace SUPABASE_KEY with the service_role key."
+            )
+
     print(f"[db] Loaded from Supabase: {len(users_df)} users, {len(payments_df)} payments, {len(surveys_df)} surveys.")
     return users_df, payments_df, surveys_df
+
 
 
 def _load_from_csv() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
