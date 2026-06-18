@@ -80,7 +80,7 @@ export function AlertWidget({ language }: { language: "en" | "vi" }) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={() => setIsExpanded(true)}
-            className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-white rounded-full border border-gray-200 text-red-500 hover:bg-gray-50 flex items-center justify-center group"
+            className="fixed bottom-28 right-4 md:bottom-8 md:right-8 z-50 w-12 h-12 bg-white rounded-full border border-gray-200 text-red-500 hover:bg-gray-50 flex items-center justify-center group shadow-md"
           >
             <div className="relative flex items-center justify-center">
               <BellRing size={20} />
@@ -92,7 +92,7 @@ export function AlertWidget({ language }: { language: "en" | "vi" }) {
       </AnimatePresence>
 
       {/* Expanded Widget */}
-      <div className="fixed bottom-28 right-8 z-50 w-full max-w-sm flex flex-col-reverse gap-3 pointer-events-none">
+      <div className="fixed bottom-28 right-4 left-4 md:left-auto md:right-8 z-50 w-auto md:w-full md:max-w-sm flex flex-col-reverse gap-3 pointer-events-none">
         <AnimatePresence>
           {isExpanded && anomalies.map((anomaly, index) => (
             <motion.div
