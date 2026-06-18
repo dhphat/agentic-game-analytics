@@ -113,20 +113,20 @@ export function AlertWidget({ language }: { language: "en" | "vi" }) {
                       {anomaly.title}
                     </h4>
                     <div className="flex gap-1 -mr-2 -mt-2">
-                      <button onClick={() => setIsExpanded(false)} className="p-1 text-gray-400 dark:text-slate-500 hover:text-gray-655 dark:hover:text-slate-200 rounded cursor-pointer" title={language === "vi" ? "Thu gọn" : "Minimize"}>
+                      <button onClick={() => setIsExpanded(false)} className="p-1 text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-200 rounded cursor-pointer" title={language === "vi" ? "Thu gọn" : "Minimize"}>
                         <Minus size={14} />
                       </button>
-                      <button onClick={() => setAnomalies(prev => prev.filter(a => a.id !== anomaly.id))} className="p-1 text-gray-400 dark:text-slate-500 hover:text-gray-655 dark:hover:text-slate-200 rounded cursor-pointer" title={language === "vi" ? "Đóng" : "Dismiss"}>
+                      <button onClick={() => setAnomalies(prev => prev.filter(a => a.id !== anomaly.id))} className="p-1 text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-200 rounded cursor-pointer" title={language === "vi" ? "Đóng" : "Dismiss"}>
                         <X size={14} />
                       </button>
                     </div>
                   </div>
-                  <p className="text-xs text-gray-600 dark:text-slate-350 mt-1.5 leading-relaxed">{anomaly.description}</p>
+                  <p className="text-xs text-gray-600 dark:text-slate-200 mt-1.5 leading-relaxed">{anomaly.description}</p>
                   
                   {anomaly.action && (
                     <button 
                       onClick={() => handleAction(anomaly)}
-                      className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-lg bg-gray-50 dark:bg-slate-950/40 hover:bg-gray-100 dark:hover:bg-slate-850/50 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-slate-300 transition-colors cursor-pointer"
+                      className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-lg bg-gray-50 dark:bg-slate-950/40 hover:bg-gray-100 dark:hover:bg-slate-800/50 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-slate-350 transition-colors cursor-pointer"
                     >
                       <Zap size={14} className="text-teal-500" />
                       {anomaly.action.label}

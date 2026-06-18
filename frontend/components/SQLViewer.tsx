@@ -11,7 +11,7 @@ export function SQLViewer({ sql }: { sql: string }) {
     <div className="w-full mt-4 bg-white dark:bg-slate-900/40 border border-gray-100 dark:border-slate-800 rounded-xl overflow-hidden">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 dark:bg-slate-900/85 hover:bg-gray-100 dark:hover:bg-slate-850/80 transition-colors text-xs text-gray-600 dark:text-slate-400 font-mono font-medium"
+        className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 dark:bg-slate-900/85 hover:bg-gray-100 dark:hover:bg-slate-800/80 transition-colors text-xs text-gray-600 dark:text-slate-400 font-mono font-medium"
       >
         <span className="flex items-center gap-2">
           <Terminal size={14} className="text-gray-400 dark:text-slate-500" /> View Generated SQL

@@ -23,7 +23,7 @@ export function DataTable({ data }: DataTableProps) {
   const renderTable = (isFull: boolean) => (
     <div className={`w-full overflow-x-auto ${isFull ? "max-h-[70vh]" : "max-h-80"} transition-all duration-300 custom-scrollbar`}>
       <table className="w-full text-sm text-left text-gray-700 dark:text-slate-300 relative">
-        <thead className="text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50 dark:bg-slate-900/70 border-b border-gray-200 dark:border-slate-850 sticky top-0 z-10">
+        <thead className="text-xs text-gray-500 dark:text-slate-400 uppercase bg-gray-50 dark:bg-slate-900/70 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-10">
           <tr>
             {columns.map((col) => (
               <th key={col} className="px-6 py-4 font-semibold tracking-wider whitespace-nowrap">
@@ -91,7 +91,7 @@ export function DataTable({ data }: DataTableProps) {
               <h3 className="font-semibold text-gray-800 dark:text-slate-200">Chi tiết dữ liệu</h3>
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-250 hover:bg-gray-200 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                className="p-1.5 text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-200 hover:bg-gray-200 dark:hover:bg-slate-800 rounded-lg transition-colors"
               >
                 <X size={18} />
               </button>

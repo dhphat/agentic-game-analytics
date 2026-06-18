@@ -67,8 +67,8 @@ export function AnalyticsChart({ data, type = "bar", xKey, yKey }: AnalyticsChar
         
       return (
         <div className="bg-white dark:bg-slate-900 p-3 rounded-lg border border-gray-200 dark:border-slate-800 shadow-md">
-          <p className="text-gray-500 dark:text-slate-400 text-xs mb-1 font-medium">{formattedLabel}</p>
-          <p className="text-gray-800 dark:text-slate-105 font-bold text-sm">
+          <p className="text-gray-500 dark:text-slate-300 text-xs mb-1 font-medium">{formattedLabel}</p>
+          <p className="text-gray-800 dark:text-white font-bold text-sm">
             {payload[0].name}: {formattedVal}
           </p>
         </div>

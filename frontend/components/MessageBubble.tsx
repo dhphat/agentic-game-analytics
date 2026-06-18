@@ -25,7 +25,7 @@ export function MessageBubble({ role, content }: MessageBubbleProps) {
 
         <div className={`px-5 py-3.5 rounded-2xl text-[15px] leading-relaxed soft-shadow ${
           isUser 
-            ? "bg-gray-100 text-gray-850 dark:bg-slate-800 dark:text-slate-100 rounded-tr-sm" 
+            ? "bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-100 rounded-tr-sm" 
             : "bg-white border border-gray-100 text-gray-700 dark:bg-slate-900/55 dark:border-slate-800/80 dark:text-slate-200 rounded-tl-sm"
         }`}>
           {content}

@@ -52,7 +52,7 @@ export function ChatInput({
         className={`relative flex flex-col w-full rounded-2xl bg-white dark:bg-slate-900/75 dark:backdrop-blur-md border transition-all duration-300 ${
           isFocused 
             ? "border-gray-200 dark:border-slate-700 shadow-sm" 
-            : "border-gray-100 dark:border-slate-800/80 hover:border-gray-200 dark:hover:border-slate-750"
+            : "border-gray-100 dark:border-slate-800/80 hover:border-gray-200 dark:hover:border-slate-700"
         }`}
         initial={false}
         animate={{ borderRadius: isFocused && suggestions.length > 0 ? "16px" : "32px" }}
@@ -74,7 +74,7 @@ export function ChatInput({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             placeholder={placeholder}
-            className="flex-1 bg-transparent border-none py-4 px-4 text-gray-805 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-0 text-lg"
+            className="flex-1 bg-transparent border-none py-4 px-4 text-gray-808 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-0 text-lg"
             disabled={isLoading}
           />
           <button
@@ -83,7 +83,7 @@ export function ChatInput({
             className={`mr-2 p-2 rounded-full flex items-center justify-center transition-all duration-200 ${
               input.trim() && !isLoading
                 ? "bg-black text-white hover:bg-gray-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
-                : "bg-gray-100 text-gray-400 dark:bg-slate-850 dark:text-slate-650"
+                : "bg-gray-100 text-gray-400 dark:bg-slate-800 dark:text-slate-600"
             }`}
           >
             <ArrowRight size={20} strokeWidth={2.5} />
