@@ -5,6 +5,8 @@ import duckdb
 import plotly.express as px
 import google.generativeai as genai
 from dotenv import load_dotenv
+from db import get_duckdb_connection
+
 
 # Load environment variables
 load_dotenv()
@@ -89,12 +91,8 @@ class SQLAgent:
             return text.strip().strip('`').strip()
 
     def execute_sql(self, sql: str) -> pd.DataFrame:
-        con = duckdb.connect(database=':memory:')
+        con = get_duckdb_connection()
         try:
-            con.execute("CREATE VIEW users_segment AS SELECT * FROM read_csv_auto('users_segment.csv')")
-            con.execute("CREATE VIEW payments AS SELECT * FROM read_csv_auto('payments.csv')")
-            con.execute("CREATE VIEW surveys AS SELECT * FROM read_csv_auto('surveys.csv')")
-            
             result_df = con.execute(sql).df()
             return result_df
         except Exception as e:

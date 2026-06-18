@@ -2,6 +2,8 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 import os
+from db import load_all_data
+
 
 class MLPredictor:
     def __init__(self):
@@ -10,10 +12,9 @@ class MLPredictor:
         self.label_encoders = {}
         
     def _prepare_data(self):
-        # Load data
+        # Load data via centralized db loader (Supabase or CSV fallback)
         try:
-            users_df = pd.read_csv("users_segment.csv")
-            payments_df = pd.read_csv("payments.csv")
+            users_df, payments_df, _ = load_all_data()
             
             # Aggregate payments
             revenue_per_user = payments_df.groupby("user_id")["amount_usd"].sum().reset_index()
@@ -36,6 +37,7 @@ class MLPredictor:
         except Exception as e:
             print(f"Error preparing data for ML: {e}")
             return None, None
+
             
     def train(self):
         df, features = self._prepare_data()

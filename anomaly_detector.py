@@ -1,11 +1,14 @@
 import pandas as pd
+from db import load_all_data
 
 def detect_anomalies():
     anomalies = []
     
     try:
+        # Load all data via centralized db loader (Supabase or CSV fallback)
+        users_df, payments_df, surveys_df = load_all_data()
+
         # 1. Detect Spike in 1-Star Reviews mentioning Bugs
-        surveys_df = pd.read_csv("surveys.csv")
         bad_reviews = surveys_df[surveys_df["rating"] == 1]
         bug_mentions = bad_reviews[bad_reviews["feedback_text"].str.contains("bug|lag|crash|error|freeze", case=False, na=False)]
         
@@ -27,9 +30,8 @@ def detect_anomalies():
             })
 
         # 2. Detect VIP Spending Drop
-        payments_df = pd.read_csv("payments.csv")
-        users_df = pd.read_csv("users_segment.csv")
-        
+        # (users_df and payments_df already loaded above)
+
         # Merge to get VIP tier for each payment
         df = payments_df.merge(users_df, on="user_id", how="inner")
         revenue_by_tier = df.groupby("vip_tier")["amount_usd"].sum()
