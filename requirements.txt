@@ -9,4 +9,4 @@ python-dotenv
 scikit-learn
 openai
 pydantic
-psycopg2-binary
+requests

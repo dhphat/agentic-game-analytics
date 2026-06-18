@@ -1,11 +1,14 @@
 """
 db.py - Central data loader.
 
-Loads data from Supabase (via PostgreSQL connection string) into Pandas DataFrames,
+Loads data from Supabase via REST API (HTTPS/port 443) into Pandas DataFrames,
 then registers them as in-memory DuckDB views so the rest of the codebase can
 query them with DuckDB SQL exactly as before.
 
-Falls back to local CSV files if SUPABASE_DB_URL is not set (for local development).
+Using REST API instead of direct PostgreSQL to avoid firewall/IPv6 issues
+on cloud hosting providers like Render.
+
+Falls back to local CSV files if SUPABASE_URL / SUPABASE_KEY are not set.
 """
 
 import os
@@ -15,8 +18,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# --- Connection ---
-SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL")  # Format: postgresql://user:password@host:port/dbname
+# --- Supabase REST API credentials ---
+SUPABASE_URL = os.getenv("SUPABASE_URL")   # e.g. https://tejpwrkawycwycjmfxjf.supabase.co
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")   # anon/service_role key
 
 # --- Module-level DataFrames (loaded once at startup) ---
 _users_df: pd.DataFrame = None
@@ -24,26 +28,48 @@ _payments_df: pd.DataFrame = None
 _surveys_df: pd.DataFrame = None
 
 
+def _fetch_table(table_name: str) -> pd.DataFrame:
+    """Fetch an entire table from Supabase REST API, handling pagination."""
+    import requests
+
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    all_rows = []
+    limit = 1000
+    offset = 0
+
+    while True:
+        url = f"{SUPABASE_URL}/rest/v1/{table_name}?select=*&limit={limit}&offset={offset}"
+        resp = requests.get(url, headers=headers, timeout=30)
+        resp.raise_for_status()
+        rows = resp.json()
+        if not rows:
+            break
+        all_rows.extend(rows)
+        if len(rows) < limit:
+            break
+        offset += limit
+
+    return pd.DataFrame(all_rows)
+
+
 def _load_from_supabase() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Load all tables from Supabase PostgreSQL."""
-    print("[db] Loading data from Supabase...")
-    engine_url = SUPABASE_DB_URL
-    # Use psycopg2 to load via pandas
-    import psycopg2
-    conn = psycopg2.connect(engine_url)
-    try:
-        users_df = pd.read_sql("SELECT * FROM users_segment", conn)
-        payments_df = pd.read_sql("SELECT * FROM payments", conn)
-        surveys_df = pd.read_sql("SELECT * FROM surveys", conn)
-        print(f"[db] Loaded from Supabase: {len(users_df)} users, {len(payments_df)} payments, {len(surveys_df)} surveys.")
-        return users_df, payments_df, surveys_df
-    finally:
-        conn.close()
+    """Load all tables from Supabase via REST API (HTTPS — no firewall issues)."""
+    print("[db] Loading data from Supabase REST API...")
+    users_df = _fetch_table("users_segment")
+    payments_df = _fetch_table("payments")
+    surveys_df = _fetch_table("surveys")
+    print(f"[db] Loaded from Supabase: {len(users_df)} users, {len(payments_df)} payments, {len(surveys_df)} surveys.")
+    return users_df, payments_df, surveys_df
 
 
 def _load_from_csv() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Fallback: load from local CSV files."""
-    print("[db] SUPABASE_DB_URL not set. Loading from local CSV files...")
+    """Fallback: load from local CSV files (for local development)."""
+    print("[db] SUPABASE_URL not set. Loading from local CSV files...")
     users_df = pd.read_csv("users_segment.csv")
     payments_df = pd.read_csv("payments.csv")
     surveys_df = pd.read_csv("surveys.csv")
@@ -61,7 +87,7 @@ def load_all_data(force_reload: bool = False):
     if _users_df is not None and not force_reload:
         return _users_df, _payments_df, _surveys_df
 
-    if SUPABASE_DB_URL:
+    if SUPABASE_URL and SUPABASE_KEY:
         _users_df, _payments_df, _surveys_df = _load_from_supabase()
     else:
         _users_df, _payments_df, _surveys_df = _load_from_csv()
