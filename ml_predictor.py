@@ -55,6 +55,9 @@ class MLPredictor:
         if not self.is_trained:
             self.train()
             
+        if not self.is_trained:
+            return []
+            
         df, features = self._prepare_data()
         if df is None:
             return []

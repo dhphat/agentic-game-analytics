@@ -21,7 +21,7 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 
 def _openai_fallback(prompt: str) -> str:
     if not openai_api_key:
-        raise RuntimeError("Gemini limit exceeded and OPENAI_API_KEY is not configured.")
+        raise RuntimeError("Gemini quota limit exceeded and OPENAI_API_KEY is not configured.")
     from openai import OpenAI
     client = OpenAI(api_key=openai_api_key)
     response = client.chat.completions.create(
