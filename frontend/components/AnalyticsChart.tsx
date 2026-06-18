@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -34,6 +35,23 @@ interface AnalyticsChartProps {
 }
 
 export function AnalyticsChart({ data, type = "bar", xKey, yKey }: AnalyticsChartProps) {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    // Detect initial state
+    setIsDark(document.documentElement.classList.contains("dark"));
+
+    // Observe changes
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+    return () => observer.disconnect();
+  }, []);
+
   if (!data || data.length === 0) return null;
 
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -48,9 +66,9 @@ export function AnalyticsChart({ data, type = "bar", xKey, yKey }: AnalyticsChar
       const formattedLabel = typeof rawLabel === 'string' && rawLabel.includes('T00:00:00') ? rawLabel.split('T')[0] : rawLabel;
         
       return (
-        <div className="bg-white p-3 rounded-lg border border-gray-200">
-          <p className="text-gray-500 text-xs mb-1 font-medium">{formattedLabel}</p>
-          <p className="text-gray-800 font-bold text-sm">
+        <div className="bg-white dark:bg-slate-900 p-3 rounded-lg border border-gray-200 dark:border-slate-800 shadow-md">
+          <p className="text-gray-500 dark:text-slate-400 text-xs mb-1 font-medium">{formattedLabel}</p>
+          <p className="text-gray-800 dark:text-slate-105 font-bold text-sm">
             {payload[0].name}: {formattedVal}
           </p>
         </div>
@@ -59,8 +77,11 @@ export function AnalyticsChart({ data, type = "bar", xKey, yKey }: AnalyticsChar
     return null;
   };
 
+  const gridStroke = isDark ? "#1e293b" : "#f3f4f6";
+  const axisStroke = isDark ? "#64748b" : "#9ca3af";
+
   return (
-    <div className="w-full h-72 mt-4 p-4 bg-white rounded-xl border border-gray-100">
+    <div className="w-full h-72 mt-4 p-4 bg-white dark:bg-slate-900/40 rounded-xl border border-gray-100 dark:border-slate-800 transition-colors duration-300">
       <ResponsiveContainer width="100%" height="100%">
         {type === "pie" ? (
           <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
@@ -83,8 +104,8 @@ export function AnalyticsChart({ data, type = "bar", xKey, yKey }: AnalyticsChar
           </PieChart>
         ) : type === "radar" ? (
           <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-            <PolarGrid stroke="#f3f4f6" />
-            <PolarAngleAxis dataKey={xKey} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+            <PolarGrid stroke={gridStroke} />
+            <PolarAngleAxis dataKey={xKey} tick={{ fill: axisStroke, fontSize: 12 }} />
             <PolarRadiusAxis tick={false} axisLine={false} />
             <Radar name={yKey} dataKey={yKey} stroke="#14b8a6" fill="#14b8a6" fillOpacity={0.4} />
             <Tooltip content={<CustomTooltip />} />
@@ -97,26 +118,26 @@ export function AnalyticsChart({ data, type = "bar", xKey, yKey }: AnalyticsChar
                 <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
-            <XAxis dataKey={xKey} stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val.toLocaleString()} />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
+            <XAxis dataKey={xKey} stroke={axisStroke} fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis stroke={axisStroke} fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val.toLocaleString()} />
             <Tooltip content={<CustomTooltip />} />
             <Area type="monotone" dataKey={yKey} stroke="#10B981" fillOpacity={1} fill="url(#colorY)" />
           </AreaChart>
         ) : type === "scatter" ? (
           <ScatterChart margin={{ top: 10, right: 10, left: 20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
-            <XAxis dataKey={xKey} type="category" stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis dataKey={yKey} type="number" stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val.toLocaleString()} />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
+            <XAxis dataKey={xKey} type="category" stroke={axisStroke} fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis dataKey={yKey} type="number" stroke={axisStroke} fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val.toLocaleString()} />
             <Tooltip cursor={{strokeDasharray: '3 3'}} content={<CustomTooltip />} />
             <Scatter name={yKey} data={data} fill="#EC4899" />
           </ScatterChart>
         ) : type === "bar" ? (
           <BarChart data={data} margin={{ top: 10, right: 10, left: 20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
-            <XAxis dataKey={xKey} stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val.toLocaleString()} />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f9fafb' }} />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
+            <XAxis dataKey={xKey} stroke={axisStroke} fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis stroke={axisStroke} fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val.toLocaleString()} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: isDark ? 'rgba(255, 255, 255, 0.05)' : '#f9fafb' }} />
             <Bar 
               dataKey={yKey} 
               fill="#14b8a6" 
@@ -125,16 +146,16 @@ export function AnalyticsChart({ data, type = "bar", xKey, yKey }: AnalyticsChar
           </BarChart>
         ) : (
           <LineChart data={data} margin={{ top: 10, right: 10, left: 20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
-            <XAxis dataKey={xKey} stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val.toLocaleString()} />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
+            <XAxis dataKey={xKey} stroke={axisStroke} fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis stroke={axisStroke} fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val.toLocaleString()} />
             <Tooltip content={<CustomTooltip />} />
             <Line 
               type="monotone" 
               dataKey={yKey} 
               stroke="#8B5CF6" 
               strokeWidth={3}
-              dot={{ fill: '#ffffff', stroke: '#8B5CF6', strokeWidth: 2, r: 4 }}
+              dot={{ fill: isDark ? '#090d16' : '#ffffff', stroke: '#8B5CF6', strokeWidth: 2, r: 4 }}
               activeDot={{ r: 6, fill: '#8B5CF6', stroke: '#fff' }}
             />
           </LineChart>

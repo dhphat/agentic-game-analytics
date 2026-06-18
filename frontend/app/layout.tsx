@@ -17,8 +17,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${instrumentSans.className} min-h-screen bg-transparent text-gray-900 overflow-hidden`}>
-        <Toaster position="bottom-right" theme="light" />
+      <body className={`${instrumentSans.className} min-h-screen bg-transparent text-gray-900 dark:text-slate-100 overflow-hidden`}>
+        <Toaster position="bottom-right" />
         {children}
       </body>
     </html>

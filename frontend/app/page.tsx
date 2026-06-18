@@ -7,7 +7,7 @@ import { DataDashboard, DataPayload } from "@/components/DataDashboard";
 import { AlertWidget } from "@/components/AlertWidget";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { Menu, Plus, MessageSquare, X, Trash2 } from "lucide-react";
+import { Menu, Plus, MessageSquare, X, Trash2, Sun, Moon } from "lucide-react";
 import { API_URL } from "@/utils/config";
 
 interface Message {
@@ -31,7 +31,31 @@ export default function Home() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Initialize dark mode from localStorage or media query
+  useEffect(() => {
+    const isDark = localStorage.getItem("darkMode") === "true" ||
+      (!("darkMode" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    setDarkMode(isDark);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    const nextDark = !darkMode;
+    setDarkMode(nextDark);
+    localStorage.setItem("darkMode", String(nextDark));
+    if (nextDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -179,7 +203,7 @@ export default function Home() {
   const isSplash = messages.length === 0;
 
   return (
-    <div className="flex h-screen w-full relative overflow-hidden bg-transparent text-gray-900">
+    <div className="flex h-screen w-full relative overflow-hidden bg-transparent text-gray-900 dark:text-slate-100 transition-colors duration-300">
       
       {/* Sidebar Overlay (Mobile) */}
       {isSidebarOpen && (
@@ -191,19 +215,19 @@ export default function Home() {
 
       {/* Sidebar */}
       <div 
-        className={`fixed md:relative inset-y-0 left-0 z-50 w-72 bg-white/95 backdrop-blur-2xl border-r border-gray-100/50 shadow-2xl md:shadow-none transition-all duration-300 ease-in-out flex flex-col ${isSidebarOpen ? "translate-x-0 ml-0" : "-translate-x-full md:-ml-72"}`}
+        className={`fixed md:relative inset-y-0 left-0 z-50 w-72 bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl border-r border-gray-100/50 dark:border-slate-800/50 shadow-2xl md:shadow-none transition-all duration-300 ease-in-out flex flex-col ${isSidebarOpen ? "translate-x-0 ml-0" : "-translate-x-full md:-ml-72"}`}
       >
-        <div className="p-4 flex items-center justify-between border-b border-gray-100/50">
+        <div className="p-4 flex items-center justify-between border-b border-gray-100/50 dark:border-slate-800/50">
           <button 
             onClick={handleNewChat}
-            className="flex-1 flex items-center justify-center gap-2 bg-teal-50 hover:bg-teal-100 text-teal-700 py-2.5 px-4 rounded-xl font-medium transition-colors text-sm"
+            className="flex-1 flex items-center justify-center gap-2 bg-teal-50 dark:bg-teal-950/30 hover:bg-teal-100 dark:hover:bg-teal-950/50 text-teal-700 dark:text-teal-400 py-2.5 px-4 rounded-xl font-medium transition-colors text-sm border border-transparent dark:border-teal-900/30"
           >
             <Plus size={18} />
             {language === "vi" ? "Cuộc trò chuyện mới" : "New Chat"}
           </button>
           <button 
             onClick={() => setIsSidebarOpen(false)}
-            className="md:hidden ml-2 p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg"
+            className="md:hidden ml-2 p-2 text-gray-400 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-900 rounded-lg"
           >
             <X size={20} />
           </button>
@@ -214,29 +238,29 @@ export default function Home() {
             <div 
               key={session.id}
               onClick={() => loadSession(session.id)}
-              className={`group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all border ${currentSessionId === session.id ? "bg-white border-teal-100 shadow-sm shadow-teal-100/50" : "border-transparent hover:bg-gray-50/80 hover:border-gray-100"}`}
+              className={`group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all border ${currentSessionId === session.id ? "bg-white dark:bg-slate-900 border-teal-100 dark:border-teal-950/50 shadow-sm shadow-teal-100/50 dark:shadow-teal-950/20" : "border-transparent hover:bg-gray-50/80 dark:hover:bg-slate-900/40 hover:border-gray-100 dark:hover:border-slate-800"}`}
             >
               <div className="flex items-center gap-3 overflow-hidden flex-1">
-                <MessageSquare size={16} className={currentSessionId === session.id ? "text-teal-500" : "text-gray-400"} />
+                <MessageSquare size={16} className={currentSessionId === session.id ? "text-teal-500" : "text-gray-400 dark:text-slate-500"} />
                 <div className="flex-1 overflow-hidden">
-                  <p className={`truncate text-sm font-medium ${currentSessionId === session.id ? "text-gray-900" : "text-gray-600 group-hover:text-gray-900"}`}>
+                  <p className={`truncate text-sm font-medium ${currentSessionId === session.id ? "text-gray-900 dark:text-white" : "text-gray-600 dark:text-slate-400 group-hover:text-gray-900 dark:group-hover:text-white"}`}>
                     {session.title}
                   </p>
-                  <p className="text-xs text-gray-400 truncate mt-0.5">
+                  <p className="text-xs text-gray-400 dark:text-slate-500 truncate mt-0.5">
                     {new Date(session.updatedAt).toLocaleDateString(language === "vi" ? "vi-VN" : "en-US", { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
               </div>
               <button
                 onClick={(e) => deleteSession(e, session.id)}
-                className="opacity-0 group-hover:opacity-100 p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all ml-2"
+                className="opacity-0 group-hover:opacity-100 p-1.5 text-gray-300 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-all ml-2"
               >
                 <Trash2 size={16} />
               </button>
             </div>
           ))}
           {sessions.length === 0 && (
-            <div className="text-center p-6 text-gray-400 text-sm mt-10">
+            <div className="text-center p-6 text-gray-400 dark:text-slate-500 text-sm mt-10">
               {language === "vi" ? "Chưa có lịch sử trò chuyện" : "No chat history"}
             </div>
           )}
@@ -257,31 +281,41 @@ export default function Home() {
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 text-gray-600 hover:text-gray-900 hover:bg-white/80 rounded-xl backdrop-blur-md transition-all shadow-sm border border-gray-100"
+            className="p-2 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 rounded-xl backdrop-blur-md transition-all shadow-sm border border-gray-100 dark:border-slate-800"
           >
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-1.5 cursor-default select-none" style={{ fontFamily: "'Google Sans', 'Product Sans', sans-serif" }}>
-            <span className="font-light text-gray-900 tracking-tight text-lg hidden sm:inline">Agentic</span>
+            <span className="font-light text-gray-900 dark:text-white tracking-tight text-lg hidden sm:inline">Agentic</span>
             <span className="font-light tracking-tight text-lg animate-gradient-text px-0.5">
               Game Analytic
             </span>
           </div>
         </div>
         
-        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-md border border-gray-200 rounded-full p-1 shadow-sm">
-          <button 
-            onClick={() => setLanguage("en")}
-            className={`px-4 py-1.5 text-sm font-medium rounded-full transition-all ${language === "en" ? "bg-gray-900 text-white shadow-md" : "text-gray-500 hover:text-gray-900"}`}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={toggleDarkMode}
+            className="p-2 text-gray-400 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300 rounded-full transition-all opacity-60 hover:opacity-100 flex items-center justify-center bg-white/45 dark:bg-slate-900/40 backdrop-blur-sm border border-gray-100 dark:border-slate-800 shadow-sm"
+            title={language === "vi" ? "Chuyển giao diện" : "Toggle theme"}
           >
-            EN
+            {darkMode ? <Sun size={16} /> : <Moon size={16} />}
           </button>
-          <button 
-            onClick={() => setLanguage("vi")}
-            className={`px-4 py-1.5 text-sm font-medium rounded-full transition-all ${language === "vi" ? "bg-gray-900 text-white shadow-md" : "text-gray-500 hover:text-gray-900"}`}
-          >
-            VI
-          </button>
+
+          <div className="flex items-center gap-1.5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-gray-200 dark:border-slate-800 rounded-full p-1 shadow-sm">
+            <button 
+              onClick={() => setLanguage("en")}
+              className={`px-3 py-1 text-xs font-semibold rounded-full transition-all ${language === "en" ? "bg-gray-900 dark:bg-slate-100 text-white dark:text-gray-900 shadow-md" : "text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white"}`}
+            >
+              EN
+            </button>
+            <button 
+              onClick={() => setLanguage("vi")}
+              className={`px-3 py-1 text-xs font-semibold rounded-full transition-all ${language === "vi" ? "bg-gray-900 dark:bg-slate-100 text-white dark:text-gray-900 shadow-md" : "text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white"}`}
+            >
+              VI
+            </button>
+          </div>
         </div>
       </header>
 
@@ -298,7 +332,7 @@ export default function Home() {
               transition={{ duration: 0.4, ease: "easeOut" }}
               className="flex-1 flex flex-col items-center justify-center px-4 -mt-20"
             >
-              <h1 className="text-4xl md:text-5xl font-light tracking-tight text-gray-800 mb-8 text-center" style={{ fontFamily: "'Google Sans', 'Product Sans', sans-serif" }}>
+              <h1 className="text-4xl md:text-5xl font-light tracking-tight text-gray-800 dark:text-slate-200 mb-8 text-center" style={{ fontFamily: "'Google Sans', 'Product Sans', sans-serif" }}>
                 {language === "vi" ? "Bạn muốn biết thông tin gì?" : "What do you want to know?"}
               </h1>
               <div className="w-full max-w-2xl relative z-40">
@@ -338,7 +372,7 @@ export default function Home() {
                 {isLoading && (
                   <motion.div 
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                    className="flex items-center gap-3 pl-12 text-gray-500 font-medium text-sm mt-4"
+                    className="flex items-center gap-3 pl-12 text-gray-500 dark:text-slate-400 font-medium text-sm mt-4"
                   >
                     <span className="w-2 h-2 rounded-full bg-teal-500 animate-bounce" style={{ animationDelay: '0ms' }} />
                     <span className="w-2 h-2 rounded-full bg-teal-500 animate-bounce" style={{ animationDelay: '150ms' }} />

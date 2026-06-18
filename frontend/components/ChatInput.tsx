@@ -49,16 +49,18 @@ export function ChatInput({
   return (
     <div className="relative w-full max-w-3xl mx-auto z-40">
       <motion.div 
-        className={`relative flex flex-col w-full rounded-2xl bg-white border transition-all duration-300 ${
-          isFocused ? "border-gray-200" : "border-gray-100 hover:border-gray-200"
+        className={`relative flex flex-col w-full rounded-2xl bg-white dark:bg-slate-900/75 dark:backdrop-blur-md border transition-all duration-300 ${
+          isFocused 
+            ? "border-gray-200 dark:border-slate-700 shadow-sm" 
+            : "border-gray-100 dark:border-slate-800/80 hover:border-gray-200 dark:hover:border-slate-750"
         }`}
         initial={false}
         animate={{ borderRadius: isFocused && suggestions.length > 0 ? "16px" : "32px" }}
       >
         <div className="relative flex items-center w-full min-h-[60px] px-2">
-          <div className="pl-4 text-gray-400">
+          <div className="pl-4 text-gray-400 dark:text-slate-500">
             {isLoading ? (
-              <span className="w-5 h-5 border-2 border-gray-200 border-t-gray-500 rounded-full animate-spin inline-block" />
+              <span className="w-5 h-5 border-2 border-gray-200 dark:border-slate-700 border-t-gray-500 dark:border-t-slate-300 rounded-full animate-spin inline-block" />
             ) : (
               <Search size={20} strokeWidth={2.5} />
             )}
@@ -72,7 +74,7 @@ export function ChatInput({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             placeholder={placeholder}
-            className="flex-1 bg-transparent border-none py-4 px-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-0 text-lg"
+            className="flex-1 bg-transparent border-none py-4 px-4 text-gray-805 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-0 text-lg"
             disabled={isLoading}
           />
           <button
@@ -80,8 +82,8 @@ export function ChatInput({
             disabled={!input.trim() || isLoading}
             className={`mr-2 p-2 rounded-full flex items-center justify-center transition-all duration-200 ${
               input.trim() && !isLoading
-                ? "bg-black text-white hover:bg-gray-800"
-                : "bg-gray-100 text-gray-400"
+                ? "bg-black text-white hover:bg-gray-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
+                : "bg-gray-100 text-gray-400 dark:bg-slate-850 dark:text-slate-650"
             }`}
           >
             <ArrowRight size={20} strokeWidth={2.5} />
@@ -95,7 +97,7 @@ export function ChatInput({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="border-t border-gray-100 overflow-hidden"
+              className="border-t border-gray-100 dark:border-slate-800/80 overflow-hidden"
             >
               <div className="p-2 pb-3">
                 {suggestions.map((suggestion, index) => (
@@ -107,9 +109,9 @@ export function ChatInput({
                       setIsFocused(false);
                       inputRef.current?.blur();
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 rounded-xl transition-colors text-gray-700"
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-slate-800/60 rounded-xl transition-colors text-gray-700 dark:text-slate-300"
                   >
-                    <Search size={16} className="text-gray-400" />
+                    <Search size={16} className="text-gray-400 dark:text-slate-500" />
                     <span className="text-base">{suggestion}</span>
                   </button>
                 ))}

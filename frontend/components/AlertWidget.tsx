@@ -56,7 +56,7 @@ export function AlertWidget({ language }: { language: "en" | "vi" }) {
       if (res.ok) {
         toast.dismiss();
         toast.success(data.message || (language === "vi" ? "Thành công!" : "Success!"), {
-          style: { background: '#ffffff', border: '1px solid #10b981', color: '#10b981' }
+          style: { background: 'var(--background)', border: '1px solid #10b981', color: '#10b981' }
         });
         setAnomalies(prev => prev.filter(a => a.id !== anomaly.id));
       } else {
@@ -80,7 +80,7 @@ export function AlertWidget({ language }: { language: "en" | "vi" }) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={() => setIsExpanded(true)}
-            className="fixed bottom-28 right-4 md:bottom-8 md:right-8 z-50 w-12 h-12 bg-white rounded-full border border-gray-200 text-red-500 hover:bg-gray-50 flex items-center justify-center group shadow-md"
+            className="fixed bottom-28 right-4 md:bottom-8 md:right-8 z-50 w-12 h-12 bg-white dark:bg-slate-900 rounded-full border border-gray-200 dark:border-slate-800 text-red-500 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center justify-center group shadow-md cursor-pointer"
           >
             <div className="relative flex items-center justify-center">
               <BellRing size={20} />
@@ -101,7 +101,7 @@ export function AlertWidget({ language }: { language: "en" | "vi" }) {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 50, scale: 0.95 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="relative pointer-events-auto overflow-hidden rounded-xl bg-white border border-gray-100 shadow-sm"
+              className="relative pointer-events-auto overflow-hidden rounded-xl bg-white dark:bg-slate-900/95 dark:backdrop-blur-md border border-gray-100 dark:border-slate-800 shadow-sm"
             >
               <div className="p-4 flex gap-3">
                 <div className="flex-shrink-0 mt-0.5">
@@ -109,24 +109,24 @@ export function AlertWidget({ language }: { language: "en" | "vi" }) {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-start justify-between">
-                    <h4 className={`font-semibold text-sm ${anomaly.severity === "critical" ? "text-red-600" : "text-orange-600"}`}>
+                    <h4 className={`font-semibold text-sm ${anomaly.severity === "critical" ? "text-red-650 dark:text-red-400" : "text-orange-650 dark:text-orange-400"}`}>
                       {anomaly.title}
                     </h4>
                     <div className="flex gap-1 -mr-2 -mt-2">
-                      <button onClick={() => setIsExpanded(false)} className="p-1 text-gray-400 hover:text-gray-600 rounded" title={language === "vi" ? "Thu gọn" : "Minimize"}>
+                      <button onClick={() => setIsExpanded(false)} className="p-1 text-gray-400 dark:text-slate-500 hover:text-gray-655 dark:hover:text-slate-200 rounded cursor-pointer" title={language === "vi" ? "Thu gọn" : "Minimize"}>
                         <Minus size={14} />
                       </button>
-                      <button onClick={() => setAnomalies(prev => prev.filter(a => a.id !== anomaly.id))} className="p-1 text-gray-400 hover:text-gray-600 rounded" title={language === "vi" ? "Đóng" : "Dismiss"}>
+                      <button onClick={() => setAnomalies(prev => prev.filter(a => a.id !== anomaly.id))} className="p-1 text-gray-400 dark:text-slate-500 hover:text-gray-655 dark:hover:text-slate-200 rounded cursor-pointer" title={language === "vi" ? "Đóng" : "Dismiss"}>
                         <X size={14} />
                       </button>
                     </div>
                   </div>
-                  <p className="text-xs text-gray-600 mt-1.5 leading-relaxed">{anomaly.description}</p>
+                  <p className="text-xs text-gray-600 dark:text-slate-350 mt-1.5 leading-relaxed">{anomaly.description}</p>
                   
                   {anomaly.action && (
                     <button 
                       onClick={() => handleAction(anomaly)}
-                      className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 transition-colors"
+                      className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-lg bg-gray-50 dark:bg-slate-950/40 hover:bg-gray-100 dark:hover:bg-slate-850/50 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-slate-300 transition-colors cursor-pointer"
                     >
                       <Zap size={14} className="text-teal-500" />
                       {anomaly.action.label}
